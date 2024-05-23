@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -x
+
+sqlite3 instance/testing.db < e6blogs/schema.sql
+
+pytest -s
+
+rm instance/testing.db

@@ -1,0 +1,11 @@
+retrieving all posts, 
+retrieving a single post by ID, 
+creating a new post, 
+updating an existing post,
+deleting a post.
+
+
+users (id, name, email, password, created_at)
+posts (id, title, content, author, created_at, last_updated)
+
+
