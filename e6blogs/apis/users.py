@@ -15,6 +15,26 @@ user_bp = Blueprint('user', __name__, url_prefix='/api/user')
 @user_bp.route("/all", methods=["GET"])
 @login_required
 def list_users():
+    """
+    Users Listing API.
+    ---
+    tags:
+      - Users
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    security:
+      - APIKeyHeader: ['Authorization']
+
+    responses:
+      200:
+        description: Successful operation
+      401:
+        description: Unauthorized Request
+      500:
+        description: Internal Server Error
+    """
     users = User().query_all({})
     for u in users:
         u.pop('password')
@@ -25,6 +45,39 @@ def list_users():
 
 @user_bp.route("/register", methods=["POST"])
 def add_user():
+    """
+    User Registration API.
+    ---
+    tags:
+      - Users
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    security:
+      - APIKeyHeader: ['Authorization']
+    parameters:
+      - in: body
+        name: body
+        schema:
+          properties:
+            first_name:
+              example: abcd
+            last_name:
+              example: wxyz
+            email:
+              example: abcd@xyz.com
+            password:
+              example: abcdef
+
+    responses:
+      200:
+        description: Successful operation
+      401:
+        description: Unauthorized Request
+      500:
+        description: Internal Server Error
+    """
     try:
         data = RegisterUserSchema().load(request.json)
     except ValidationError as err:
@@ -44,6 +97,37 @@ def add_user():
 
 @user_bp.route("/login", methods=["POST"])
 def login():
+    """
+    User login API.
+    ---
+    tags:
+      - Users
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    security:
+      - APIKeyHeader: ['Authorization']
+    parameters:
+      - in: body
+        name: body
+        schema:
+          properties:
+            email:
+              example: abcd@xyz.com
+            password:
+              example: abcdef
+
+    responses:
+      200:
+        description: Successful operation
+      400:
+        description: Bad Request
+      401:
+        description: Unauthorized Request
+      500:
+        description: Internal Server Error
+    """
     try:
         data = LoginSchema().load(request.json)
     except ValidationError as err:
@@ -63,10 +147,29 @@ def login():
     return jsonify({"status": "success", "details": user.meta})
 
 
-
 @user_bp.route("/logout", methods=["GET"])
 @login_required
 def logout():
+    """
+    User logout API.
+    ---
+    tags:
+      - Users
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    security:
+      - APIKeyHeader: ['Authorization']
+
+    responses:
+      200:
+        description: Successful operation
+      401:
+        description: Unauthorized Request
+      500:
+        description: Internal Server Error
+    """
     curr_user = request.current_user
     curr_user.logout()
     return jsonify({"status": "success"})

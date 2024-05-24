@@ -24,10 +24,11 @@ e6data $ cd ./e6blogs  # move inside project directory
 e6blogs $ export FLASK_APP=__init__.py
 e6blogs $ flask run --debug
 ```
+> To check API Docs visit [api-docs here](http://localhost:5000/apidocs/)
 
 ## Testing
 ```bash
 # `run_test` script uses pytest, it also takes care of setting up and cleaning of test db.
-e6data $ run_test  # to run tests.
+e6data $ ./run_test  # to run tests.
 ```
 

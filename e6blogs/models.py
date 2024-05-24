@@ -220,6 +220,7 @@ class Blog(ModelBase):
 			{created_at_clause}
 			{author_clause}
 			{offset_clause}
+			ORDER BY id DESC
 			LIMIT 30
 		"""
 

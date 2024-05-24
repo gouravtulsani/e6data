@@ -13,6 +13,40 @@ blog_bp = Blueprint('blog', __name__, url_prefix='/api/blog')
 @blog_bp.route("/all", methods=["GET"])
 @login_required
 def list_all_blogs():
+    """
+    Blogs Listing API.
+    ---
+    tags:
+      - Blogs
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    security:
+      - APIKeyHeader: ['Authorization']
+    parameters:
+      - in: query
+        name: author
+        type: integer
+        description: filter for blogs
+      - in: query
+        name: created_at
+        type: integer
+        description: filter for blogs `YYYYMMDD` format
+      - in: query
+        name: cursor
+        type: integer
+        description: for pagination (last blog id.)
+        default: 0
+
+    responses:
+      200:
+        description: Successful operation
+      401:
+        description: Unauthorized Request
+      500:
+        description: Internal Server Error
+    """
     try:
         data = ListBlogSchema().load(request.args)
     except ValidationError as err:
@@ -26,6 +60,31 @@ def list_all_blogs():
 @blog_bp.route("/<int:blog_id>/details", methods=["GET"])
 @login_required
 def blog_details(blog_id):
+    """
+        Blogs Detail API.
+        ---
+        tags:
+          - Blogs
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        security:
+          - APIKeyHeader: ['Authorization']
+        parameters:
+          - in: path
+            name: blog_id
+            type: integer
+            required: true
+
+        responses:
+          200:
+            description: Successful operation
+          401:
+            description: Unauthorized Request
+          500:
+            description: Internal Server Error
+        """
     blog = Blog().query(blog_id=blog_id)
     if not blog.found:
         return jsonify({'status': 'fail', 'msg': 'blog not found'}), 400
@@ -36,6 +95,35 @@ def blog_details(blog_id):
 @blog_bp.route("/add", methods=["POST"])
 @login_required
 def create():
+    """
+    Add Blog API.
+    ---
+    tags:
+      - Blogs
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    security:
+      - APIKeyHeader: ['Authorization']
+    parameters:
+      - in: body
+        name: body
+        schema:
+          properties:
+            title:
+              example: "Blog's title"
+            content:
+              example: "Blog's body content goes here"
+
+    responses:
+      200:
+        description: Successful operation
+      401:
+        description: Unauthorized Request
+      500:
+        description: Internal Server Error
+        """
     curr_user = request.current_user
     try:
         data = AddBlogSchema().load(request.json)
@@ -52,6 +140,39 @@ def create():
 @blog_bp.route("/<int:blog_id>/update", methods=["POST"])
 @login_required
 def update(blog_id):
+    """
+    Blog Update API.
+    ---
+    tags:
+      - Blogs
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    security:
+      - APIKeyHeader: ['Authorization']
+    parameters:
+      - in: path
+        name: blog_id
+        type: integer
+        required: true
+      - in: body
+        name: body
+        schema:
+          properties:
+            title:
+              example: "Updated Title"
+            content:
+              example: "Updated Content"
+
+    responses:
+      200:
+        description: Successful operation
+      401:
+        description: Unauthorized Request
+      500:
+        description: Internal Server Error
+    """
     curr_user = request.current_user
     try:
         data = UpdateBlogSchema().load(request.json)
@@ -70,6 +191,30 @@ def update(blog_id):
 @blog_bp.route("/<int:blog_id>/delete", methods=["DELETE"])
 @login_required
 def delete(blog_id):
+    """
+    Blog Delete API.
+    ---
+    tags:
+      - Blogs
+    consumes:
+      - application/json
+    produces:
+      - application/json
+    security:
+      - APIKeyHeader: ['Authorization']
+    parameters:
+      - in: path
+        name: blog_id
+        type: integer
+
+    responses:
+      200:
+        description: Successful operation
+      401:
+        description: Unauthorized Request
+      500:
+        description: Internal Server Error
+    """
     curr_user = request.current_user
     blog = Blog().query(blog_id=blog_id, author=curr_user.meta['id'])
     if not blog.found:
